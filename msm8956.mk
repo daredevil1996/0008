@@ -298,11 +298,16 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/seccomp_policy/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy
 
-
 # Thermal
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal-engine-8956.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-8956.conf \
     $(LOCAL_PATH)/configs/thermal-engine-8976.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-8976.conf
+
+# Shims
+PRODUCT_PACKAGES += \
+    libshims_ims \
+    libshims_get_process_name \
+    libshims_rild_socket
 
 # USB HAL
 PRODUCT_PACKAGES += \
