@@ -12,3 +12,6 @@
 
 # flashlight
 /sys/devices/soc.0/qpnp-flash-led-23/leds/flashlight/brightness       u:object_r:sysfs_flashlight:s0
+
+# HALs
+/(vendor|system/vendor)/bin/hw/android\.hardware\.ir@1\.0-service.xiaomi_8952       u:object_r:hal_ir_default_exec:s0
