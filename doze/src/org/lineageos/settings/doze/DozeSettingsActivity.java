@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016 The LineageOS Project
+ * Copyright (C) 2015-2016 The CyanogenMod Project
+ *               2017 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lineageos.settings.doze;
 
-import android.app.Activity;
+package org.lineageos.settings.doze;
+
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-/**
- * Created by shade on 10/14/16.
- */
-
-public class DozeSettings extends PreferenceActivity {
+public class DozeSettingsActivity extends PreferenceActivity {
 
     private static final String TAG_DOZE = "doze";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.doze);
 
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new DozeSettingsFragment(), TAG_DOZE).commit();
