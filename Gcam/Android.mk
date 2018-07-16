@@ -1,6 +1,7 @@
-LOCAL_PATH := $(call my-dir) include
+LOCAL_PATH := $(call my-dir)
 
-$(CLEAR_VARS) LOCAL_MODULE := Gcamera
+include $(CLEAR_VARS)
+LOCAL_MODULE := Gcamera
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := Gcam/Gcam.apk
 LOCAL_CERTIFICATE := PRESIGNED
