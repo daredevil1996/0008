@@ -162,6 +162,8 @@ PRODUCT_PACKAGES += \
 # Doze mode
 PRODUCT_PACKAGES += \
     XiaomiParts \
+    liblivedisplay \
+    libjni_livedisplay \
     XiaomiDoze
 
 # Face detection extension
