@@ -11,7 +11,7 @@ vendor.audio.offload.track.enable=false
 vendor.audio.playback.mch.downsample=true
 vendor.audio.safx.pbe.enabled=true
 
-persist.audio.dirac.speaker=true
+persist.vendor.audio.dirac.speaker=true
 persist.vendor.audio.fluence.speaker=true
 persist.vendor.audio.fluence.voicecall=true
 
@@ -22,9 +22,6 @@ vendor.voice.path.for.pcm.voip=true
 vendor.voice.conc.fallbackpath=deep-buffer
 vendor.voice.playback.conc.disabled=true
 vendor.voice.record.conc.disabled=false
-
-#low audio flinger standby delay to reduce power consumption
-ro.audio.flinger_standbytime_ms=300
 
 # Bluetooth
 bluetooth.hfp.client=1
@@ -52,14 +49,6 @@ ro.use_data_netmgrd=true
 persist.data.netmgrd.qos.enable=true
 persist.data.mode=concurrent
 persist.data.iwlan.enable=true
-
-# Display
-PRODUCT_PROPERTY_OVERRIDES += \
-ro.sf.lcd_density=360
-
-# fling_velocity
-ro.min.fling_velocity=160
-ro.max.fling_velocity=20000
 
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/config
@@ -123,6 +112,8 @@ persist.radio.rat_on=combine
 persist.radio.sib16_support=1
 persist.radio.sw_mbn_update=0
 persist.radio.VT_HYBRID_ENABLE=1
+persist.dbg.ims_volte_enable=1
+persist.dbg.wfc_avail_ovr=1
 
 # TCP
 net.tcp.2g_init_rwnd=10
@@ -133,9 +124,18 @@ persist.timed.enable=true
 # WiFi
 wifi.interface=wlan0
 
-# WiFi Display
-persist.debug.wfd.enable=1
-persist.sys.wfd.virtual=0
+# Display
+ro.qcom.ad=1
+ro.qcom.ad.calib.data=/system/etc/calib.cfg
+ro.qcom.ad.sensortype=2
+ro.qualcomm.cabl=0
 
-# Delayed restart
-ro.am.reschedule_service=true
+# fling_velocity
+ro.min.fling_velocity=160
+ro.max.fling_velocity=20000
+
+# zram disk
+ro.config.zram=true
+
+# assistant
+ro.opa.eligible_device=true

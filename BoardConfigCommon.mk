@@ -19,6 +19,8 @@ VENDOR_PATH := device/xiaomi/msm8956-common
 
 TARGET_SPECIFIC_HEADER_PATH := $(VENDOR_PATH)/include
 
+BOARD_GLOBAL_CFLAGS += -DBATTERY_REAL_INFO
+
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
@@ -46,21 +48,20 @@ TARGET_NO_BOOTLOADER := true
 
 # Kernel
 BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 ramoops_memreserve=4M
-BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
+# BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
-TARGET_KERNEL_SOURCE := kernel/xiaomi/msm8956
+TARGET_KERNEL_SOURCE := kernel/xiaomi/msm8956-lineageos
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 
 # ANT+
 BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
 
 # Audio
-AUDIO_FEATURE_ENABLED_SND_MONITOR := true
 AUDIO_FEATURE_ENABLED_AAC_ADTS_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_ACDB_LICENSE := true
 AUDIO_FEATURE_ENABLED_ALAC_OFFLOAD := true
@@ -78,6 +79,7 @@ AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
 AUDIO_FEATURE_ENABLED_PCM_OFFLOAD_24 := true
 AUDIO_FEATURE_ENABLED_PCM_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
+AUDIO_FEATURE_ENABLED_SND_MONITOR := true
 AUDIO_FEATURE_ENABLED_SOURCE_TRACKING := true
 AUDIO_FEATURE_ENABLED_SPKR_PROTECTION := true
 AUDIO_FEATURE_ENABLED_VBAT_MONITOR := true
@@ -87,6 +89,7 @@ AUDIO_FEATURE_ENABLED_WMA_OFFLOAD := true
 AUDIO_USE_LL_AS_PRIMARY_OUTPUT := true
 BOARD_USES_ALSA_AUDIO := true
 USE_CUSTOM_AUDIO_POLICY := 1
+USE_XML_AUDIO_POLICY_CONF := 1
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -99,26 +102,30 @@ QCOM_BT_USE_SMD_TTY := true
 BOARD_QTI_CAMERA_32BIT_ONLY := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 TARGET_TS_MAKEUP := true
-TARGET_FLASHLIGHT_CONTROL := true
-TARGET_FLASHLIGHT_CONTROL_ID := 0
-TARGET_FLASHLIGHT_CONTROL_PATH := /sys/class/leds/flashlight/brightness
-TARGET_FLASHLIGHT_CONTROL_VALUE := 100
+TARGET_USES_QTI_CAMERA_DEVICE := true
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
+#WITH_CUSTOM_CHARGER := false
+
+# Lineage Hardware
+BOARD_HARDWARE_CLASS += \
+    hardware/lineage/lineagehw \
+    $(VENDOR_PATH)/lineagehw
 
 # CNE
 BOARD_USES_QCNE := true
 
-# Dex
+# Enable dex-preoptimization to speed up first boot sequence
 ifeq ($(HOST_OS),linux)
   ifneq ($(TARGET_BUILD_VARIANT),eng)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-    endif
+    WITH_DEXPREOPT := true
+    WITH_DEXPREOPT_DEBUG_INFO := false
+    USE_DEX2OAT_DEBUG := false
+    DONT_DEXPREOPT_PREBUILTS := true
+    WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
   endif
 endif
-WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
 
 # Display
 MAX_VIRTUAL_DISPLAY_DIMENSION := 2048
@@ -136,11 +143,12 @@ NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 SF_VSYNC_EVENT_PHASE_OFFSET_NS := 2000000
 VSYNC_EVENT_PHASE_OFFSET_NS := 6000000
 
+OVERRIDE_RS_DRIVER:= libRSDriver_adreno.so
+
 # Encryption
 TARGET_HW_DISK_ENCRYPTION := true
-
-# Extended Filesystem Support
 TARGET_EXFAT_DRIVER := exfat
+TARGET_KERNEL_HAVE_EXFAT := true
 
 # Filesystem
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
@@ -157,9 +165,8 @@ BOARD_HAVE_QCOM_FM := true
 TARGET_QCOM_NO_FM_FIRMWARE := true
 
 # GPS
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := msm8952
 USE_DEVICE_SPECIFIC_GPS := true
-TARGET_USE_LEGACY_SUPPORT := true
+USE_DEVICE_SPECIFIC_LOC_API := true
 TARGET_NO_RPC := true
 
 # Init
@@ -175,12 +182,8 @@ DEVICE_MATRIX_FILE   := $(VENDOR_PATH)/compatibility_matrix.xml
 TARGET_PROVIDES_KEYMASTER := true
 
 # Lights
+BOARD_LIGHTS_VARIANT := aw2013
 TARGET_PROVIDES_LIBLIGHT := true
-
-# Lineage hardware
-BOARD_HARDWARE_CLASS += \
-    hardware/lineage/lineagehw \
-    $(VENDOR_PATH)/lineagehw
 
 # Media
 TARGET_USES_MEDIA_EXTENSIONS := true
@@ -190,14 +193,13 @@ TARGET_PER_MGR_ENABLED := true
 
 # Power
 TARGET_POWERHAL_VARIANT := qcom
-TARGET_USES_INTERACTION_BOOST := true
 
 # Properties
 TARGET_SYSTEM_PROP += $(VENDOR_PATH)/system.prop
 
 # Qualcomm
 BOARD_USES_QCOM_HARDWARE := true
-BOARD_USES_QC_TIME_SERVICES := true
+# BOARD_USES_QC_TIME_SERVICES := true
 TARGET_USE_SDCLANG := true
 
 # Recovery
@@ -211,17 +213,21 @@ USE_OPENGL_RENDERER := true
 
 # RIL
 PROTOBUF_SUPPORTED := true
-BOARD_PROVIDES_LIBRIL := true
 TARGET_RIL_VARIANT := caf
+BOARD_PROVIDES_LIBRIL := true
+
+# Tap-to-Wake
+TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
+
+# Sensors
+USE_SENSOR_MULTI_HAL := true
 
 # SELinux
-#include device/qcom/sepolicy/sepolicy.mk
-#BOARD_SEPOLICY_DIRS += $(VENDOR_PATH)/sepolicy
-
-# Shims
-TARGET_LD_SHIM_LIBS := \
-    /vendor/lib64/lib-imsvt.so|/vendor/lib64/libshims_ims.so \
-    /vendor/lib64/libril-qc-qmi-1.so|/vendor/lib64/libshims_rild_socket.so
+include device/qcom/sepolicy/sepolicy.mk
+include device/qcom/sepolicy/legacy-sepolicy.mk
+BOARD_SEPOLICY_DIRS += \
+    $(VENDOR_PATH)/sepolicy \
+    $(VENDOR_PATH)/legacy-common
 
 # Wifi
 WPA_SUPPLICANT_VERSION      := VER_0_8_X
